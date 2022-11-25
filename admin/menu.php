@@ -11,11 +11,11 @@
                     </li>
                     <li><a data-toggle="tab" href="#subject"><i class="fa fa-calendar"></i> Subject</a>
                     </li>
-                    <li><a data-toggle="tab" href="#faculty"><i class="fa fa-users"></i> Faculty</a>
+                    <!-- <li><a data-toggle="tab" href="#faculty"><i class="fa fa-users"></i> Faculty</a> -->
                     </li>
                     <li><a data-toggle="tab" href="#face"><i class="fa fa-user-plus"></i> Face Enrollment </a>
                     </li>
-                    <li><a data-toggle="tab" href="#report"><i class="fa fa-bar-chart"></i> Reports</a>
+                    <!-- <li><a data-toggle="tab" href="#report"><i class="fa fa-bar-chart"></i> Reports</a> -->
                     </li>
                     <li><a data-toggle="tab" href="#account"><i class="fa fa-user-secret"></i> Account</a>
                     </li>

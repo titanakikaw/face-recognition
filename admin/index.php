@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html class="no-js" lang="">
-<?php include 'includes/header.php' ?>
+<?php
+include 'includes/header.php';
+include '../dbcon.php';
+?>
 
 <body>
     <!-- Start Header Top Area -->
@@ -116,7 +119,13 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
                         <div class="website-traffic-ctn">
-                            <h2><span class="counter">10</span></h2>
+                            <!-- <h2><span class="counter">10</span></h2> -->
+                            <?php
+                            $query = mysqli_query($con, "SELECT COUNT(*) from course");
+                            $data = $query->fetch_row();
+                            echo '<h2><span class="counter">' . $data[0] . '</span></h2>'
+                            ?>
+
                             <p>Number of Departments</p>
                         </div>
                         <div style="margin-left:15px"><i class="fa fa-building fa-4x text-success"></i></div>

@@ -173,8 +173,35 @@
 
 
    let datatable = $('#data-table-basic').DataTable({
-      "ordering": false
+      ordering: false,
+      searching: false,
+      pageLength: 8,
+      bLengthChange: false,
+      "ajax": {
+         "url": "index-back.php",
+         "contentType": "application/x-www-form-urlencoded",
+         "type": "post",
+         "data": {
+            "subject": $('#curr_subject')[0].innerText,
+            "action": "gettimein"
+         },
+         "success": (response) => {
+            if (response.length != 0) {
+               response.forEach((data) => {
+                  datatable.row.add([
+                     data['name'],
+                     data['time']
+                  ]).draw(false)
+               })
+
+            }
+         },
+         "error": (err) => {
+            console.log(err)
+         }
+      }
    });
+
 
 
    function myTimer() {
@@ -244,7 +271,9 @@
             })
             drawBox.draw(canvas)
             if (result._label != 'unknown') {
-               saveAttendance(result._label)
+               if (saveAttendance(result._label)) {
+                  $('#data-table-basic').DataTable().ajax.reload();
+               }
             }
 
          })

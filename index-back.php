@@ -28,17 +28,17 @@ if ($_POST['action'] == 'saveattendance') {
         if ($query_check->num_rows <= 0) {
             $query = "INSERT INTO attendance (`time`, `date`, `subject`,student) VALUES ('$time', '$date', '$subject', '$student')";
             if (mysqli_query($con, $query)) {
+                echo json_encode(true);
             }
         }
     }
 }
 if ($_POST['action'] == 'gettimein') {
-
     $subject = $_POST['subject'];
     $date = date("Y/m/d");
 
     if ($subject != '') {
-        $query = "SELECT * from attendance where `subject` = '" . $subject . "' AND date = '" . $date . "'";
+        $query = "SELECT CONCAT(b.lastname , ', ' , b.firstname) as name,a.time from attendance a INNER JOIN student_info b on a.student = b.student_id  where `subject` = '" . $subject . "' AND date = '" . $date . "'";
         $stmt = mysqli_query($con, $query);
         $rows = $stmt->fetch_all(MYSQLI_ASSOC);
         echo json_encode($rows);
