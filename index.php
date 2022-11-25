@@ -100,26 +100,7 @@
                </tr>
             </thead>
             <tbody>
-               <tr>
-                  <td>Jennifer Chang</td>
-                  <td>08:00 AM</td>
 
-               </tr>
-               <tr>
-                  <td>Vicente Luce</td>
-                  <td>08:10 AM</td>
-
-               </tr>
-               <tr>
-                  <td>Karen Olson</td>
-                  <td>08:15 AM</td>
-
-               </tr>
-               <tr>
-                  <td>Shelly Smith</td>
-                  <td>07:58 AM</td>
-
-               </tr>
             </tbody>
          </table>
       </div>
@@ -186,12 +167,21 @@
    let images_names = [];
    let date = new Date();
    let schedules = [];
+   let studid = [];
    let streaming;
    setInterval(myTimer, 60000);
 
+
+   let datatable = $('#data-table-basic').DataTable({
+      "ordering": false
+   });
+
+
    function myTimer() {
       const date = new Date();
-      document.getElementById("time_now").innerHTML = date.toLocaleTimeString();
+      document.getElementById("time_now").innerHTML = date.toLocaleTimeString([], {
+         timeStyle: 'short'
+      });
       if (schedules.length != 0) {
          schedules.forEach(sched => {
             if (date.toLocaleTimeString('en-GB') >= sched.time_from.toString() & date.toLocaleTimeString('en-GB') <= sched.time_to.toString()) {
@@ -203,7 +193,6 @@
          })
       }
    }
-
 
    navigator.getUserMedia = (
       navigator.getUserMedia ||
@@ -222,11 +211,8 @@
       }).then((stream) => frame.srcObject = stream).catch(err => console.log(err));
    }
 
-
    frame.addEventListener('play', async () => {
-
       const labeledFaceDescriptors = await readJSONFiles()
-      console.log(labeledFaceDescriptors)
       const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
 
       let canvas = faceapi.createCanvasFromMedia(frame);
@@ -275,14 +261,9 @@
                .detectSingleFace(img)
                .withFaceLandmarks()
                .withFaceDescriptor();
-
-            console.log(detections)
-            // const descriptors = [new Float32Array(detections.descriptor)]
-            // return new faceapi.LabeledFaceDescriptors('robert', descriptors)
          })
       )
    }
-
 
    async function saveAttendance(studentId) {
       const response = await fetch('index-back.php', {
@@ -325,8 +306,47 @@
          datas.forEach(data => {
             schedules.push(data)
          });
-         console.log(datas)
       }
+   }
+
+   async function readJSONFiles() {
+      return Promise.all(
+         studid.map(async student => {
+            const descriptors = [];
+            let URI = `jsonStudent/${student}.json`;
+            const response = await fetch(URI)
+            const data = await response.json();
+            descriptors.push(new Float32Array(data))
+            return new faceapi.LabeledFaceDescriptors(student, descriptors)
+         })
+      )
+   }
+
+   async function gettimein() {
+      const response = await fetch("", {
+         method: 'POST',
+         headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+         },
+         body: `action=gettimein&subject=${$('#curr_subject')[0].innerText}`
+      })
+      const data = await response.json();
+      console.log(data)
+   }
+
+   async function getStudents() {
+      const response = await fetch("index-back.php", {
+         method: "POST",
+         headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+         },
+         body: `action=getstudents&subject=${$('#curr_subject')[0].innerText}`
+      })
+      const data = await response.json();
+      data.forEach(id => {
+         studid.push(id.student_id)
+         // console.log(id.student_id)
+      })
    }
 
    $(document).ready(() => {
@@ -346,19 +366,7 @@
       var today = dayOfWeek + " " + dayOfMonth + " of " + curMonth + ", " + curYear;
       $('#date_today').text(today)
       getschedule();
+      myTimer();
+      getStudents();
    })
-
-   async function readJSONFiles() {
-      let student_id = ['1234'];
-      return Promise.all(
-         student_id.map(async student => {
-            const descriptors = [];
-            let URI = `jsonStudent/${student}.json`;
-            const response = await fetch(URI)
-            const data = await response.json();
-            descriptors.push(new Float32Array(data))
-            return new faceapi.LabeledFaceDescriptors(student, descriptors)
-         })
-      )
-   }
 </script>

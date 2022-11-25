@@ -86,7 +86,6 @@ if (count($_FILES) > 0) {
                                     <div class="col-lg-8">
                                         <div class="nk-int-st">
                                             <select class="form-control input-sm select2" data-live-search="true" id="student_id" name="select">
-                                                <option selected disabled="disabled">Select Student</option>
                                                 <?php
                                                 $query = mysqli_query($con, "SELECT si.*,c.*,si.id si_id FROM student_info si INNER JOIN course c ON c.id = si.course where pic = '' OR pic IS Null ORDER BY lastname ASC");
                                                 while ($rows = mysqli_fetch_array($query)) {
@@ -187,40 +186,40 @@ if (count($_FILES) > 0) {
                     })
 
                     async function capturePhoto() {
-                        let canvasElem = faceapi_container.querySelector('canvas')
-                        canvasElem.getContext('2d').drawImage(frame, 0, 0, canvasElem.width, canvasElem.height);
-                        let image_data_url = canvasElem.toDataURL('image/jpeg');
-                        let files = document.querySelector("input")
-                        canvasElem.toBlob((blob) => {
-                            const file = new File([blob], `${document.querySelector("#student_id").value}.jpeg`);
-                            const dT = new DataTransfer();
-                            dT.items.add(file);
-                            files.files = dT.files;
+                        let stud_id = document.querySelector("#student_id").value
+                        if (stud_id != '') {
+                            let canvasElem = faceapi_container.querySelector('canvas')
+                            canvasElem.getContext('2d').drawImage(frame, 0, 0, canvasElem.width, canvasElem.height);
+                            let image_data_url = canvasElem.toDataURL('image/jpeg');
+                            let files = document.querySelector("input")
+                            canvasElem.toBlob((blob) => {
+                                const file = new File([blob], `${document.querySelector("#student_id").value}.jpeg`);
+                                const dT = new DataTransfer();
+                                dT.items.add(file);
+                                files.files = dT.files;
 
-                        });
+                            });
 
 
-                        if (files.files.length > 0) {
-                            let newForm = document.createElement("form");
-                            document.body.append(newForm)
+                            if (files.files.length > 0) {
+                                let newForm = document.createElement("form");
+                                document.body.append(newForm)
 
-                            if (saveJSON()) {
-                                newForm.enctype = "multipart/form-data"
-                                newForm.method = 'POST'
-                                newForm.append(document.querySelector("input"))
-                                newForm.append(document.querySelector("#student_id"))
-                                newForm.submit()
-                            } else {
-                                alert("Please try again")
+                                if (saveJSON()) {
+                                    newForm.enctype = "multipart/form-data"
+                                    newForm.method = 'POST'
+                                    newForm.append(document.querySelector("input"))
+                                    newForm.append(document.querySelector("#student_id"))
+                                    newForm.submit()
+                                } else {
+                                    alert("Please try again")
+                                }
+
                             }
-
+                        } else {
+                            alert("Please select a student")
                         }
-
-
-
                     }
-
-
                     async function saveJSON() {
                         const response = await fetch('enrollapi.php', {
                             method: 'POST',
