@@ -1,4 +1,4 @@
--- Adminer 4.8.1 MySQL 10.4.24-MariaDB dump
+-- Adminer 4.8.1 MySQL 5.5.5-10.4.22-MariaDB dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -19,7 +19,7 @@ CREATE TABLE `attendance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `attendance` (`id`, `time`, `date`, `subject`, `student`) VALUES
-(29,	'06:15:25pm',	'2022/11/24',	'MATH 101',	'1234');
+(29,	'06:15:25pm',	'2022/11/25',	'MATH 101',	'1234');
 
 DROP TABLE IF EXISTS `course`;
 CREATE TABLE `course` (
@@ -41,16 +41,16 @@ DROP TABLE IF EXISTS `enrolled_subjects`;
 CREATE TABLE `enrolled_subjects` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `subject_id` bigint(20) NOT NULL,
-  `student_id` int(11) NOT NULL,
+  `student_id` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `subject_id` (`subject_id`),
   KEY `student_id` (`student_id`),
-  CONSTRAINT `enrolled_subjects_ibfk_1` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`),
-  CONSTRAINT `enrolled_subjects_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `student_info` (`id`)
+  CONSTRAINT `enrolled_subjects_ibfk_1` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `enrolled_subjects` (`id`, `subject_id`, `student_id`) VALUES
-(2,	3,	4);
+(2,	3,	'4'),
+(3,	3,	'1810155-2');
 
 DROP TABLE IF EXISTS `student_info`;
 CREATE TABLE `student_info` (
@@ -83,7 +83,7 @@ CREATE TABLE `subjects` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `subjects` (`id`, `code`, `desc`, `time_from`, `time_to`) VALUES
-(3,	'test code',	'subject description',	'00:00',	'02:59'),
-(4,	'test subject',	'test subject d',	'7:00',	'8:59');
+(3,	'test code',	'MATH 101',	'00:00',	'02:59'),
+(4,	'test subject',	'MATH 102',	'7:00',	'8:59');
 
--- 2022-11-24 17:38:05
+-- 2022-11-25 08:22:56
